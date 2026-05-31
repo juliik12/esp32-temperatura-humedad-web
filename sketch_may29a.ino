@@ -5,8 +5,8 @@
 #include <LittleFS.h>
 #include <DHT.h>
 
-const char* ssid = "Daniela2022";
-const char* password = "5748conesa";
+const char* ssid = "xxxxxx";
+const char* password = "xxxxxx";
 
 #define DHTPIN 14
 #define DHTTYPE DHT11
@@ -59,9 +59,8 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
 
-  Serial.println("\n===== BOOT =====");
+  Serial.println("\n-----BOOT ------");
 
-  // WiFi estable
   WiFi.mode(WIFI_STA);
   WiFi.setSleep(false);
 
@@ -78,9 +77,7 @@ void setup() {
 
   dht.begin();
 
-  // =========================
-  // LITTLEFS (CORRECTO)
-  // =========================
+
   if (!LittleFS.begin(false)) {
     Serial.println("Error montando LittleFS");
     return;
@@ -88,7 +85,7 @@ void setup() {
 
   Serial.println("LittleFS OK");
 
-  // listar archivos
+
   File root = LittleFS.open("/");
   File file = root.openNextFile();
 
@@ -98,9 +95,9 @@ void setup() {
     file = root.openNextFile();
   }
 
-  // =========================
+
   // HTTP SERVER
-  // =========================
+
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     Serial.println("GET /");
 
@@ -115,9 +112,9 @@ void setup() {
 
   server.begin();
 
-  // =========================
+
   // WEBSOCKET
-  // =========================
+
   webSocket.begin();
   webSocket.onEvent(handleWebSocketMessage);
 
