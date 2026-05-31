@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Temperatura y Humedad</title>
+
+<script src="https://cdn.jsdelivr.net/npm/raphael@2.3.0/raphael.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/justgage@1.6.1/justgage.min.js"></script>
+
+<style>
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    margin:0;
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:150px;
+
+    background:#f5f5f5;
+}
+
+.gauge-container{
+    text-align:center;
+}
+
+#gaugeTemp,
+#gaugeHum{
+    width:250px;
+    height:200px;
+}
+</style>
+</head>
+<body>
+
+<div class="gauge-container">
+    <h2>Temperatura</h2>
+    <div id="gaugeTemp"></div>
+</div>
+
+<div class="gauge-container">
+    <h2>Humedad</h2>
+    <div id="gaugeHum"></div>
+</div>
+
+<script>
+
+let temperatureGauge = new JustGage({
+    id: "gaugeTemp",
+    value: 0,
+    min: 0,
+    max: 50,
+    symbol: " °C",
+    pointer: true,
+    gaugeWidthScale: 0.6,
+    counter: true
+});
+
+let humidityGauge = new JustGage({
+    id: "gaugeHum",
+    value: 0,
+    min: 0,
+    max: 100,
+    symbol: " %",
+    pointer: true,
+    gaugeWidthScale: 0.6,
+    counter: true
+});
+
+const ws = new WebSocket(
+    "ws://" + window.location.hostname + ":81/"
+);
+
+ws.onopen = () => {
+    console.log("WebSocket conectado");
+};
+
+ws.onclose = () => {
+    console.log("WebSocket desconectado");
+};
+
+ws.onmessage = (event) => {
+
+    const data = JSON.parse(event.data);
+
+    temperatureGauge.refresh(data.temperature);
+    humidityGauge.refresh(data.humedad);
+};
+
+</script>
+
+</body>
+</html>
